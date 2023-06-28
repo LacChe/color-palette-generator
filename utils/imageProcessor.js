@@ -1,4 +1,4 @@
-const MAX_DEPTH = 4; // 2^n = colors
+const MAX_DEPTH = 3; // 2^n = colors
 const SHRINK_FACTOR = 0.1;
 
 export function thinArray(arr, amount, percentage) {

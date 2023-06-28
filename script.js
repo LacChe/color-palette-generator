@@ -1,6 +1,5 @@
 import { convertPixelArrayToRGB, quantizate, getPixelArray, thinArray } from './utils/imageProcessor.js';
-
-let quantizedPixelArr = [];
+import { generateColorPalettes } from './utils/colorPaletteGenerator.js';
 
 const imageInputButton = document.querySelector(".image-input-button");
 imageInputButton.addEventListener("click", () => document.querySelector('.image-input').click());
@@ -25,8 +24,9 @@ function handleImageChange(e) {
         // process image on load
         const img = document.createElement("img");
         img.addEventListener("load", () => {
-            quantizedPixelArr = getQuantizedArray(img);
-            updateDOM();
+            const colorArr = getQuantizedArray(img);
+            const colorPalettes = generateColorPalettes(colorArr);
+            updateDOM(colorArr);
         });
         img.src = e.target.result
     });
@@ -37,8 +37,8 @@ function handleImageChange(e) {
     }
 }
 
-function updateDOM() {
-    for(let c of quantizedPixelArr) {
+function updateDOM(colorArr) {
+    for(let c of colorArr) {
         const div = document.createElement('div');
         div.style.backgroundColor = `rgb(${c.r}, ${c.g}, ${c.b})`;
         div.textContent = `rgb(${c.r}, ${c.g}, ${c.b}, ${c.L})`;
@@ -46,7 +46,7 @@ function updateDOM() {
     }
 }
 
-let getQuantizedArray = function getQuantizedArray(img) {
+function getQuantizedArray(img) {
 
     // create pixel and rgb array, sort by perceived luminosity
     const pixelArr = getPixelArray(img);
@@ -55,8 +55,8 @@ let getQuantizedArray = function getQuantizedArray(img) {
         return p1.L - p2.L;
     });
 
-    // thin array, save 2 from every 10% section of luminosity
-    const thinnedArr = thinArray(rgbArr, 2, 0.1);
+    // thin array, save 10 from every 10% section of luminosity
+    const thinnedArr = thinArray(rgbArr, 10, 0.1);
 
     // quantize values, sort by perceived luminosity
     const quantizedArr = quantizate(thinnedArr);
