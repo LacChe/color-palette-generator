@@ -1,4 +1,4 @@
-const MAX_DEPTH = 4; // square to get number of colors, 4*4 = 16
+const MAX_DEPTH = 3; // 2^n = colors
 
 export function quantizate(rgbArr, depth = 0) {
 
