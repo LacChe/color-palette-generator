@@ -126,7 +126,7 @@ export function convertPixelArrayToRGB(pixelArr) {
     return rgbArr;
 } 
 
-export function getPixelArray(img) {
+export function getPixelArraay(img) {
     // create canvas elements
     const cvs = document.createElement("canvas");
     const ctx = cvs.getContext("2d");
