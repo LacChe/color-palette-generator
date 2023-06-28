@@ -25,7 +25,7 @@ function handleImageChange(e) {
         // process image on load
         const img = document.createElement("img");
         img.addEventListener("load", () => {
-            quantizedPixelArr = getQuantizedArray();
+            quantizedPixelArr = getQuantizedArray(img);
             updateDOM();
         });
         img.src = e.target.result
@@ -46,7 +46,7 @@ function updateDOM() {
     }
 }
 
-let getQuantizedArray = function getQuantizedArray() {
+let getQuantizedArray = function getQuantizedArray(img) {
 
     // create pixel and rgb array, sort by perceived luminosity
     const pixelArr = getPixelArray(img);
