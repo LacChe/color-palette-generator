@@ -24,33 +24,6 @@ function handleImageChange(e) {
 
         // process image on load
         const img = document.createElement("img");
-        let getQuantizedArray = function getQuantizedArray() {
-
-            // create pixel and rgb array, sort by perceived luminosity
-            const pixelArr = getPixelArray(img);
-            const rgbArr = convertPixelArrayToRGB(pixelArr);
-            rgbArr.sort((p1, p2) => {
-                return p1.L - p2.L;
-            });
-
-            // thin array, save 2 from every 10% section of luminosity
-            // const thinnedArr = thinArray(rgbArr, 2, 0.1);
-            const thinnedArr = thinArray(rgbArr, 2, 0.1);
-
-            // quantize values, sort by perceived luminosity
-            const quantizedArr = quantizate(thinnedArr);
-            quantizedArr.sort((p1, p2) => {
-                return p1.L - p2.L;
-            });
-
-            // return without duplicates
-            let uniqueQuantizedArr = quantizedArr.filter((element, index, self) => {
-                return index === self.findIndex((t) => (
-                    t.r === element.r && t.g === element.g && t.b === element.b
-                ));
-            });
-            return uniqueQuantizedArr;
-        }
         img.addEventListener("load", () => {
             quantizedPixelArr = getQuantizedArray();
             updateDOM();
@@ -71,4 +44,31 @@ function updateDOM() {
         div.textContent = `rgb(${c.r}, ${c.g}, ${c.b}, ${c.L})`;
         document.querySelector('body').appendChild(div);
     }
+}
+
+let getQuantizedArray = function getQuantizedArray() {
+
+    // create pixel and rgb array, sort by perceived luminosity
+    const pixelArr = getPixelArray(img);
+    const rgbArr = convertPixelArrayToRGB(pixelArr);
+    rgbArr.sort((p1, p2) => {
+        return p1.L - p2.L;
+    });
+
+    // thin array, save 2 from every 10% section of luminosity
+    const thinnedArr = thinArray(rgbArr, 2, 0.1);
+
+    // quantize values, sort by perceived luminosity
+    const quantizedArr = quantizate(thinnedArr);
+    quantizedArr.sort((p1, p2) => {
+        return p1.L - p2.L;
+    });
+
+    // return without duplicates
+    let uniqueQuantizedArr = quantizedArr.filter((element, index, self) => {
+        return index === self.findIndex((t) => (
+            t.r === element.r && t.g === element.g && t.b === element.b
+        ));
+    });
+    return uniqueQuantizedArr;
 }
