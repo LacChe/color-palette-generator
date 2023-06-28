@@ -1,4 +1,5 @@
 const MAX_DEPTH = 3; // 2^n = colors
+const SHRINK_FACTOR = 0.1;
 
 export function quantizate(rgbArr, depth = 0) {
 
@@ -124,3 +125,25 @@ export function convertPixelArrayToRGB(pixelArr) {
     }
     return rgbArr;
 } 
+
+export function getPixelArray(img) {
+    // create canvas elements
+    const cvs = document.createElement("canvas");
+    const ctx = cvs.getContext("2d");
+
+    // scale image
+    let newWidth = 100 / SHRINK_FACTOR;
+    let newHeight = 100 / SHRINK_FACTOR;
+    if(img.width > img.height) {
+        newHeight *= img.height / img.width;
+    } else {
+        newWidth *= img.width / img.height;
+    }
+    ctx.canvas.width = newWidth;
+    ctx.canvas.height = newHeight;
+    ctx.drawImage(img, 0, 0, ctx.canvas.width, ctx.canvas.height);
+
+    // create rgb array
+    return ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height).data;
+        
+}
