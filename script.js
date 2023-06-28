@@ -24,9 +24,17 @@ function handleImageChange(e) {
         // process image on load
         const img = document.createElement("img");
         img.addEventListener("load", () => {
+
+            // get pixel data
             const colorArr = getQuantizedArray(img);
+
+            // generate palettes
             const colorPalettes = generateColorPalettes(colorArr);
-            updateDOM(colorArr);
+
+            // TODO draw to dom for testing
+            updateDOM(colorPalettes.base);
+            updateDOM(colorPalettes.combinedMonochromatic);
+            colorPalettes.monochromatic.forEach(e => updateDOM(e));
         });
         img.src = e.target.result
     });
