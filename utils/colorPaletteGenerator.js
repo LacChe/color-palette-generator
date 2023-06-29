@@ -1,89 +1,87 @@
 export function generateColorPalettes(quantizedPixelArr) {
-    // generate combinedMonochromatic
-    let hueArray = quantizedPixelArr.map(e => {
-        return RGBtoHSV(e.r, e.g, e.b).h;
+    // create hue array
+    let hsvArr = quantizedPixelArr.map(e => {
+        return RGBtoHSV(e.r, e.g, e.b);
     });
-    let combinedMonochromatic = generateMonochromatic([...hueArray.reverse()], hueArray.length).reverse();
+
+    // generate combinedMonochromatic
+    let combinedMonochromatic = generateMonochromatic([...hsvArr.map(hsv => hsv.h).reverse()], hsvArr.length).reverse();
 
     // generate monochromatic
     let monochromatic = [];
-    quantizedPixelArr.forEach((color) => {
-        let hsv = RGBtoHSV(color.r, color.g, color.b);
+    hsvArr.forEach((hsv) => {
         monochromatic.push(generateMonochromatic([hsv.h], 8).reverse());
+    });
+
+    // generate adjacent colors
+    let adjacentComplementColors = [];
+    hsvArr.forEach((hsv) => {
+        adjacentComplementColors.push(generateAdjacentAndComplementColors(hsv));
     });
 
     return {
         base: quantizedPixelArr,
         combinedMonochromatic,
         monochromatic,
+        adjacentComplementColors,
     };
 }
 
-// modified from https://gist.github.com/mjackson/5311256
-function HSVtoRGB(h, s, v) {
-    h /= 360;
-    s /= 100;
-    v /= 100;
+function generateAdjacentAndComplementColors(hsv) {
+    let adjacentColorsHSV = [];
 
-    let r, g, b;
-  
-    let i = Math.floor(h * 6);
-    let f = h * 6 - i;
-    let p = v * (1 - s);
-    let q = v * (1 - f * s);
-    let t = v * (1 - (1 - f) * s);
-  
-    switch (i % 6) {
-      case 0: r = v, g = t, b = p; break;
-      case 1: r = q, g = v, b = p; break;
-      case 2: r = p, g = v, b = t; break;
-      case 3: r = p, g = q, b = v; break;
-      case 4: r = t, g = p, b = v; break;
-      case 5: r = v, g = p, b = q; break;
-    }
-  
-    return { 
-        r: r * 255, 
-        g: g * 255, 
-        b: b * 255 
-    };
-  }
+    // main color
+    adjacentColorsHSV.push(hsv);
+    adjacentColorsHSV.push({
+        h: hsv.h,
+        s: hsv.s * 0.7,
+        v: hsv.v + (100 - hsv.v) * 0.3,
+    });
 
-function RGBtoHSV (r, g, b) {
-    let rabs, gabs, babs, rr, gg, bb, h, s, v, diff, diffc, percentRoundFn;
-    rabs = r / 255;
-    gabs = g / 255;
-    babs = b / 255;
-    v = Math.max(rabs, gabs, babs),
-    diff = v - Math.min(rabs, gabs, babs);
-    diffc = c => (v - c) / 6 / diff + 1 / 2;
-    percentRoundFn = num => Math.round(num * 100) / 100;
-    if (diff == 0) {
-        h = s = 0;
-    } else {
-        s = diff / v;
-        rr = diffc(rabs);
-        gg = diffc(gabs);
-        bb = diffc(babs);
+    // adj hue 1
+    let adjHue1 = hsv.h - 60;
+    if(adjHue1 < 0) adjHue1 += 360;
+    adjacentColorsHSV.push({
+        h: adjHue1,
+        s: hsv.s,
+        v: hsv.v,
+    });
+    adjacentColorsHSV.push({
+        h: adjHue1,
+        s: hsv.s * 0.7,
+        v: hsv.v + (100 - hsv.v) * 0.3,
+    });
 
-        if (rabs === v) {
-            h = bb - gg;
-        } else if (gabs === v) {
-            h = (1 / 3) + rr - bb;
-        } else if (babs === v) {
-            h = (2 / 3) + gg - rr;
-        }
-        if (h < 0) {
-            h += 1;
-        }else if (h > 1) {
-            h -= 1;
-        }
-    }
-    return {
-        h: Math.round(h * 360),
-        s: percentRoundFn(s * 100),
-        v: percentRoundFn(v * 100)
-    };
+    // adj hue 2
+    let adjHue2 = hsv.h + 60;
+    if(adjHue2 >= 360) adjHue2 -= 360;
+    adjacentColorsHSV.push({
+        h: adjHue2,
+        s: hsv.s,
+        v: hsv.v,
+    });
+    adjacentColorsHSV.push({
+        h: adjHue2,
+        s: hsv.s * 0.7,
+        v: hsv.v + (100 - hsv.v) * 0.3,
+    });
+
+    // complement
+    let complementHue = hsv.h + 180;
+    if(complementHue >= 360) complementHue -= 360;
+    adjacentColorsHSV.push({
+        h: complementHue,
+        s: 100 - hsv.s,
+        v: 100 - hsv.v,
+    });
+    adjacentColorsHSV.push({
+        h: complementHue,
+        s: 100 - hsv.s * 0.7,
+        v: 100 - hsv.v + (100 - hsv.v) * 0.3,
+    });
+
+    return adjacentColorsHSV.map(({h, s, v}) => HSVtoRGB(h, s, v));
+
 }
 
 // modified from https://sighack.com/post/procedural-color-algorithms-monochromatic-color-scheme
@@ -135,3 +133,70 @@ function map3(value, start1, stop1, start2, stop2, v, when) {
     }
     return out;
   }
+
+  // modified from https://gist.github.com/mjackson/5311256
+  function HSVtoRGB(h, s, v) {
+    h /= 360;
+    s /= 100;
+    v /= 100;
+
+    let r, g, b;
+
+    let i = Math.floor(h * 6);
+    let f = h * 6 - i;
+    let p = v * (1 - s);
+    let q = v * (1 - f * s);
+    let t = v * (1 - (1 - f) * s);
+
+    switch (i % 6) {
+    case 0: r = v, g = t, b = p; break;
+    case 1: r = q, g = v, b = p; break;
+    case 2: r = p, g = v, b = t; break;
+    case 3: r = p, g = q, b = v; break;
+    case 4: r = t, g = p, b = v; break;
+    case 5: r = v, g = p, b = q; break;
+    }
+
+    return { 
+        r: r * 255, 
+        g: g * 255, 
+        b: b * 255 
+    };
+}
+  
+function RGBtoHSV (r, g, b) {
+    let rabs, gabs, babs, rr, gg, bb, h, s, v, diff, diffc, percentRoundFn;
+    rabs = r / 255;
+    gabs = g / 255;
+    babs = b / 255;
+    v = Math.max(rabs, gabs, babs),
+    diff = v - Math.min(rabs, gabs, babs);
+    diffc = c => (v - c) / 6 / diff + 1 / 2;
+    percentRoundFn = num => Math.round(num * 100) / 100;
+    if (diff == 0) {
+        h = s = 0;
+    } else {
+        s = diff / v;
+        rr = diffc(rabs);
+        gg = diffc(gabs);
+        bb = diffc(babs);
+
+        if (rabs === v) {
+            h = bb - gg;
+        } else if (gabs === v) {
+            h = (1 / 3) + rr - bb;
+        } else if (babs === v) {
+            h = (2 / 3) + gg - rr;
+        }
+        if (h < 0) {
+            h += 1;
+        }else if (h > 1) {
+            h -= 1;
+        }
+    }
+    return {
+        h: Math.round(h * 360),
+        s: percentRoundFn(s * 100),
+        v: percentRoundFn(v * 100)
+    };
+}
