@@ -83,7 +83,6 @@ function addPalette(name, palette, parentElement, mainColors = false) {
         // set styling
         button.classList.add(`${mainColors ? 'main-' : ''}color-button`, 'hide-inner-text', 'gradient-border');
         button.style.backgroundColor = `rgb(${c.r}, ${c.g}, ${c.b})`;
-        button.style.color = RGBtoHSV(c.r, c.g, c.b).v < 80 ? 'white' : 'black';
 
         // set onclick callbacks
         let mainCallback = function mainCallback() {
@@ -108,14 +107,17 @@ function addPalette(name, palette, parentElement, mainColors = false) {
 
         const rText = document.createElement('p');
         rText.textContent = `R: ${Math.round(c.r)}`;
+        rText.style.color = RGBtoHSV(c.r, c.g, c.b).v < 80 ? 'white' : 'black';
         textContainer.appendChild(rText);
         
         const gText = document.createElement('p');
         gText.textContent = `G: ${Math.round(c.g)}`;
+        gText.style.color = RGBtoHSV(c.r, c.g, c.b).v < 80 ? 'white' : 'black';
         textContainer.appendChild(gText);
         
         const bText = document.createElement('p');
         bText.textContent = `B: ${Math.round(c.b)}`;
+        bText.style.color = RGBtoHSV(c.r, c.g, c.b).v < 80 ? 'white' : 'black';
         textContainer.appendChild(bText);
         
         button.appendChild(textContainer);

@@ -3,15 +3,23 @@
     src: url('./fonts/black_chancery/blkchcry.ttf');
 }
 
+:root {
+    --button-selected-border: black;
+    --button-border: white;
+    --text-color: #E7B10A;
+    --main-background: #F7F1E5;
+    --page-sides: #4C4B16;
+}
+
 * {
     margin: 0;
     padding: 0;
     font-family: custom-font;
-    color: #E7B10A;
+    color: var(--text-color);
 }
 
 body {
-    background-color: #4C4B16;
+    background-color: var(--page-sides);
 }
 
 main {
@@ -19,7 +27,7 @@ main {
     flex-direction: column;
     justify-content: start;
     align-items: center;
-    background: #F7F1E5;
+    background: var(--main-background);
     width: 70vw;
     max-width: 40rem;
     min-height: 100vh;
@@ -27,14 +35,19 @@ main {
     margin: 0 auto;
 }
 
+h1 {
+    font-size: 5rem;
+    padding: 2rem 0;
+}
+
 h2 {
     text-align: center;
-    font-size: 2rem;
+    font-size: 2.2rem;
     padding-top: 2rem;
 }
 
 h3 {
-    font-size: 1.8rem;
+    font-size: 1.7rem;
     padding-top: 1rem;
 }
 
@@ -54,7 +67,7 @@ h3 {
     background-size: fill;
     background-repeat: no-repeat;
     background-position: center;
-    border: #E7B10A dashed 0.3rem;
+    border: var(--text-color) dashed 0.3rem;
 }
 
 .image-input {
@@ -79,11 +92,19 @@ h3 {
 }
 
 .main-color-button {
-    border: 0.15rem solid white;
+    border: 0.15rem solid var(--button-border);
 }
 
 .main-color-button:not(.hide-inner-text) {
-    border: 0.15rem solid black;
+    border: 0.15rem solid var(--button-selected-border);
+}
+
+.main-color-button:active {
+    border: 0.15rem inset var(--button-border);
+}
+
+.main-color-button:not(.hide-inner-text):active {
+    border: 0.15rem inset var(--button-selected-border);
 }
 
 .color-button {
