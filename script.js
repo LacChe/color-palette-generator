@@ -1,5 +1,8 @@
 import { convertPixelArrayToRGB, quantizate, getPixelArray, thinArray } from './utils/imageProcessor.js';
-import { generateColorPalettes } from './utils/colorPaletteGenerator.js';
+import { generateColorPalettes, RGBtoHSV } from './utils/colorPaletteGenerator.js';
+
+const mainColorButtons = [];
+let colorPalettes;
 
 const imageInputButton = document.querySelector(".image-input-button");
 imageInputButton.addEventListener("click", () => document.querySelector('.image-input').click());
@@ -29,12 +32,16 @@ function handleImageChange(e) {
             const colorArr = getQuantizedArray(img);
 
             // generate palettes
-            const colorPalettes = generateColorPalettes(colorArr);
+            colorPalettes = generateColorPalettes(colorArr);
 
-            // TODO draw to dom for testing
-            updateDOM(colorPalettes.base);
-            updateDOM(colorPalettes.combinedMonochromatic);
-            colorPalettes.monochromatic.forEach(e => updateDOM(e));
+            // add palettes to DOM
+            let palettes = document.querySelector('.palettes');
+            palettes.innerHTML = '';
+            addPalette('Base Colors', colorPalettes.combinedMonochromatic, palettes, true);
+            const subPalette = document.createElement('div')
+            subPalette.classList.add('sub-palettes');
+            palettes.appendChild(subPalette);
+
         });
         img.src = e.target.result
     });
@@ -45,13 +52,72 @@ function handleImageChange(e) {
     }
 }
 
-function updateDOM(colorArr) {
-    for(let c of colorArr) {
-        const div = document.createElement('div');
-        div.style.backgroundColor = `rgb(${c.r}, ${c.g}, ${c.b})`;
-        div.textContent = `rgb(${c.r}, ${c.g}, ${c.b}, ${c.L})`;
-        document.querySelector('body').appendChild(div);
-    }
+function renderSubPalettes(i) {
+    let subPalettes = document.querySelector('.sub-palettes');
+    subPalettes.innerHTML = '';
+    addPalette('Monochromatic', colorPalettes.monochromatic[i], subPalettes);
+    addPalette('Triadic', colorPalettes.triadic[i], subPalettes);
+    addPalette('Tetradic', colorPalettes.tetradic[i], subPalettes);
+    addPalette('Adjacent with Complementary', colorPalettes.adjacentComplementary[i], subPalettes);
+}
+
+function addPalette(name, palette, parentElement, mainColors = false) {
+    const paletteName = document.createElement('h2');
+    paletteName.textContent = name;
+    parentElement.appendChild(paletteName);
+
+    const colorButtonsWrapper = document.createElement('div');
+    colorButtonsWrapper.classList.add('main-color-buttons-wrapper');
+    parentElement.appendChild(colorButtonsWrapper);
+
+    for(let i = 0; i < palette.length; i++) {
+        let c = palette[i];
+        const buttonContainer = document.createElement('div');
+
+        const button = document.createElement('button');
+
+        // set styling
+        button.classList.add('color-button', 'hide-inner-text');
+        button.style.backgroundColor = `rgb(${c.r}, ${c.g}, ${c.b})`;
+        button.style.color = RGBtoHSV(c.r, c.g, c.b).v < 80 ? 'white' : 'black';
+
+        // set onclick callbacks
+        let mainCallback = function mainCallback() {
+            mainColorButtons.forEach(b => {
+                b.classList.add('hide-inner-text');
+            });
+            button.classList.remove('hide-inner-text');
+            
+            renderSubPalettes(i);
+        }
+        let secondaryCallback = function secondaryCallback() {
+            
+            button.classList.toggle('hide-inner-text');
+        }
+        let callback = mainColors ? mainCallback : secondaryCallback;
+        button.addEventListener('click', callback);
+
+        if(mainColors) mainColorButtons.push(button);
+        buttonContainer.appendChild(button);
+
+        const textContainer = document.createElement('div');
+
+        const rText = document.createElement('p');
+        rText.textContent = `R: ${Math.round(c.r)}`;
+        textContainer.appendChild(rText);
+        
+        const gText = document.createElement('p');
+        gText.textContent = `G: ${Math.round(c.g)}`;
+        textContainer.appendChild(gText);
+        
+        const bText = document.createElement('p');
+        bText.textContent = `B: ${Math.round(c.b)}`;
+        textContainer.appendChild(bText);
+        
+        button.appendChild(textContainer);
+        
+        colorButtonsWrapper.appendChild(buttonContainer);
+    };
 }
 
 function getQuantizedArray(img) {
