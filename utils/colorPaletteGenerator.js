@@ -219,6 +219,7 @@ function generateMonochromatic(hue, count) {
         hue = [0, ...hue, 0];
     }
 
+    // add two for black and white
     count += 2;
     let scale = [];
     let indexShift = 0;
@@ -237,6 +238,8 @@ function generateMonochromatic(hue, count) {
         }
         scale[i] = color;
     }
+
+    // remove black and white from array
     return scale.slice(1, scale.length - 1);
 }
 

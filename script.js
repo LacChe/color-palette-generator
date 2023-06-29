@@ -55,7 +55,7 @@ function handleImageChange(e) {
     }
 }
 
-function renderSubPalettes(i) {
+function addSubPalettes(i) {
     let subPalettes = document.querySelector('.sub-palettes');
     subPalettes.innerHTML = '';
     selectedPaletteButtons = selectedPaletteButtons.slice(0, 1);
@@ -66,10 +66,13 @@ function renderSubPalettes(i) {
 }
 
 function addPalette(name, palette, parentElement, mainColors = false) {
+
+    // create palette container
     const paletteContainer = document.createElement('div');
     paletteContainer.classList.add('palette-container');
     parentElement.appendChild(paletteContainer);
 
+    // create palette name and selection button
     const nameContainer = document.createElement('div');
     nameContainer.classList.add('palette-name-container');
     paletteContainer.appendChild(nameContainer);
@@ -83,7 +86,7 @@ function addPalette(name, palette, parentElement, mainColors = false) {
         });
         selectPaletteButton.classList.add('palette-button-selected');
 
-        // assign colors
+        // assign colors on palette selection
         let c = palette[7];
         document.documentElement.style.setProperty('--text', `rgb(${c.r}, ${c.g}, ${c.b})`);
         c = palette[5];
@@ -100,6 +103,7 @@ function addPalette(name, palette, parentElement, mainColors = false) {
     paletteName.textContent = name;
     nameContainer.appendChild(paletteName);
 
+    // create individual color buttons
     const colorButtonsWrapper = document.createElement('div');
     colorButtonsWrapper.classList.add('main-color-buttons-wrapper');
     paletteContainer.appendChild(colorButtonsWrapper);
@@ -120,8 +124,7 @@ function addPalette(name, palette, parentElement, mainColors = false) {
                 b.classList.add('hide-inner-text');
             });
             button.classList.remove('hide-inner-text');
-            
-            renderSubPalettes(i);
+            addSubPalettes(i);
         }
         let secondaryCallback = function secondaryCallback() {
             button.classList.toggle('hide-inner-text');
@@ -132,6 +135,7 @@ function addPalette(name, palette, parentElement, mainColors = false) {
         if(mainColors) mainColorButtons.push(button);
         buttonContainer.appendChild(button);
 
+        // add rgb text to dom
         const textContainer = document.createElement('div');
 
         const rText = document.createElement('p');

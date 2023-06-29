@@ -1,6 +1,7 @@
 const MAX_DEPTH = 3; // 2^n = colors
 const SHRINK_FACTOR = 0.1;
 
+// keep amount of items from every percent section of array
 export function thinArray(arr, amount, percentage) {
     let currentSectionCap = 100 * percentage;
     let count = 0;
