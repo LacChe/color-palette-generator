@@ -1,7 +1,8 @@
 import { convertPixelArrayToRGB, quantizate, getPixelArray, thinArray } from './utils/imageProcessor.js';
 import { generateColorPalettes, RGBtoHSV } from './utils/colorPaletteGenerator.js';
 
-const mainColorButtons = [];
+let mainColorButtons = [];
+let selectedPaletteButtons = [];
 let colorPalettes;
 
 const imageInputButton = document.querySelector(".image-input-button");
@@ -37,6 +38,8 @@ function handleImageChange(e) {
             // add palettes to DOM
             let palettes = document.querySelector('.palettes');
             palettes.innerHTML = '';
+            mainColorButtons = [];
+            selectedPaletteButtons = [];
             addPalette('Base Colors', colorPalettes.combinedMonochromatic, palettes, true);
             const subPalette = document.createElement('div')
             subPalette.classList.add('sub-palettes');
@@ -55,6 +58,7 @@ function handleImageChange(e) {
 function renderSubPalettes(i) {
     let subPalettes = document.querySelector('.sub-palettes');
     subPalettes.innerHTML = '';
+    selectedPaletteButtons = selectedPaletteButtons.slice(0, 1);
     addPalette('Monochromatic', colorPalettes.monochromatic[i], subPalettes);
     addPalette('Triadic', colorPalettes.triadic[i], subPalettes);
     addPalette('Tetradic', colorPalettes.tetradic[i], subPalettes);
@@ -73,6 +77,23 @@ function addPalette(name, palette, parentElement, mainColors = false) {
     const selectPaletteButton = document.createElement('button');
     selectPaletteButton.classList.add('select-palette-button');
     selectPaletteButton.textContent = 'Select';
+    selectPaletteButton.addEventListener('click', e => {
+        selectedPaletteButtons.forEach(b => {
+            b.classList.remove('palette-button-selected');
+        });
+        selectPaletteButton.classList.add('palette-button-selected');
+
+        // assign colors
+        let c = palette[7];
+        document.documentElement.style.setProperty('--text', `rgb(${c.r}, ${c.g}, ${c.b})`);
+        c = palette[5];
+        document.documentElement.style.setProperty('--highlight', `rgb(${c.r}, ${c.g}, ${c.b})`);
+        c = palette[3];
+        document.documentElement.style.setProperty('--main', `rgb(${c.r}, ${c.g}, ${c.b})`);
+        c = palette[1];
+        document.documentElement.style.setProperty('--support', `rgb(${c.r}, ${c.g}, ${c.b})`);        
+    });
+    selectedPaletteButtons.push(selectPaletteButton);
     nameContainer.appendChild(selectPaletteButton);
 
     const paletteName = document.createElement(`${mainColors ? 'h2' : 'h3'}`);
@@ -95,10 +116,6 @@ function addPalette(name, palette, parentElement, mainColors = false) {
 
         // set onclick callbacks
         let mainCallback = function mainCallback() {
-
-            // todo
-            document.documentElement.style.setProperty('--page-sides', '#000000');
-
             mainColorButtons.forEach(b => {
                 b.classList.add('hide-inner-text');
             });
@@ -107,7 +124,6 @@ function addPalette(name, palette, parentElement, mainColors = false) {
             renderSubPalettes(i);
         }
         let secondaryCallback = function secondaryCallback() {
-            
             button.classList.toggle('hide-inner-text');
         }
         let callback = mainColors ? mainCallback : secondaryCallback;

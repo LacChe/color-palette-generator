@@ -4,23 +4,22 @@
 }
 
 :root {
-    --button-selected-border: black;
-    --button-border: white;
-    --text-color: #E7B10A;
-    --main-background: #F7F1E5;
-    --contrasting-color: #4C4B16;
+    --text: #E7B10A;
+    --highlight: #E7B10A;
+    --main: #F7F1E5;
+    --support: #4C4B16;
 }
 
 * {
     margin: 0;
     padding: 0;
     font-family: custom-font;
-    color: var(--text-color);
+    color: var(--text);
     scrollbar-width: thin;
 }
 
 body {
-    background-color: var(--contrasting-color);
+    background-color: var(--support);
 }
 
 main {
@@ -28,7 +27,7 @@ main {
     flex-direction: column;
     justify-content: start;
     align-items: center;
-    background: var(--main-background);
+    background: var(--main);
     width: 70vw;
     max-width: 40rem;
     min-height: 100vh;
@@ -44,7 +43,9 @@ h1 {
 }
 
 h2 {
+    position: relative;
     margin: 0 auto;
+    left: -2rem;
     text-align: center;
     font-size: 2.2rem;
     padding-top: 2rem;
@@ -54,6 +55,8 @@ h3 {
     font-size: 1.7rem;
     padding-top: 1rem;
 }
+
+/* palette */
 
 .palette-name-container {
     display: flex;
@@ -66,14 +69,18 @@ h3 {
     width: 3.8rem;
     height: 100%;
     font-size: 1.2rem;
-    color: var(--contrasting-color);
-    background-color: var(--main-background);
-    border: 0.15rem solid var(--text-color);
+    color: var(--text);
+    background-color: var(--main);
+    border: 0.15rem solid var(--highlight);
     cursor: pointer;
 }
 
 .select-palette-button:active {
-    border: 0.15rem solid var(--contrasting-color);
+    border: 0.15rem solid var(--support);
+}
+
+.palette-button-selected {
+    color: var(--support);
 }
 
 /* image input */
@@ -92,7 +99,7 @@ h3 {
     background-size: fill;
     background-repeat: no-repeat;
     background-position: center;
-    border: var(--text-color) dashed 0.3rem;
+    border: var(--text) dashed 0.3rem;
 }
 
 .image-input {
@@ -117,19 +124,27 @@ h3 {
 }
 
 .main-color-button {
-    border: 0.15rem solid var(--button-border);
+    border: 0.15rem solid var(--highlight);
 }
 
 .main-color-button:not(.hide-inner-text) {
-    border: 0.15rem solid var(--button-selected-border);
+    border: 0.15rem solid var(--support);
 }
 
 .main-color-button:active {
-    border: 0.15rem inset var(--button-border);
+    border: 0.15rem inset var(--highlight);
 }
 
 .main-color-button:not(.hide-inner-text):active {
-    border: 0.15rem inset var(--button-selected-border);
+    border: 0.15rem inset var(--support);
+}
+
+.main-color-button > *, .main-color-button:hover > * {
+    font-size: 1rem;
+}
+
+.main-color-button:hover > * {
+    font-size: 1rem;
 }
 
 .color-button {
