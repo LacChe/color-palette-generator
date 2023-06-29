@@ -62,13 +62,17 @@ function renderSubPalettes(i) {
 }
 
 function addPalette(name, palette, parentElement, mainColors = false) {
-    const paletteName = document.createElement('h2');
+    const paletteContainer = document.createElement('div');
+    paletteContainer.classList.add('palette-container');
+    parentElement.appendChild(paletteContainer);
+
+    const paletteName = document.createElement(`${mainColors ? 'h2' : 'h3'}`);
     paletteName.textContent = name;
-    parentElement.appendChild(paletteName);
+    paletteContainer.appendChild(paletteName);
 
     const colorButtonsWrapper = document.createElement('div');
     colorButtonsWrapper.classList.add('main-color-buttons-wrapper');
-    parentElement.appendChild(colorButtonsWrapper);
+    paletteContainer.appendChild(colorButtonsWrapper);
 
     for(let i = 0; i < palette.length; i++) {
         let c = palette[i];
@@ -77,7 +81,7 @@ function addPalette(name, palette, parentElement, mainColors = false) {
         const button = document.createElement('button');
 
         // set styling
-        button.classList.add('color-button', 'hide-inner-text');
+        button.classList.add(`${mainColors ? 'main-' : ''}color-button`, 'hide-inner-text', 'gradient-border');
         button.style.backgroundColor = `rgb(${c.r}, ${c.g}, ${c.b})`;
         button.style.color = RGBtoHSV(c.r, c.g, c.b).v < 80 ? 'white' : 'black';
 
