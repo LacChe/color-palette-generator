@@ -111,25 +111,9 @@ export function convertPixelArrayToRGB(pixelArr) {
     const rgbArr = [];
     for(let i = 0; i < pixelArr.length; i+=4) {
 
-        // calculate luminance
-        function sRGBtoLin(colorChannel) {
-            if ( colorChannel <= 0.04045 ) {
-                return colorChannel / 12.92;
-            } else {
-                return Math.pow((( colorChannel + 0.055)/1.055), 2.4);
-            }
-        }
         const vR = pixelArr[i] / 255;
         const vG = pixelArr[i + 1] / 255;
         const vB = pixelArr[i + 2] / 255;
-
-        function YtoLstar(Y) {
-        if ( Y <= (216/24389)) {
-                return Y * (24389/27); 
-            } else {
-                return Math.pow(Y,(1/3)) * 116 - 16;
-            }
-        }
 
         rgbArr.push({
             r: pixelArr[i],
@@ -163,4 +147,21 @@ export function getPixelArray(img) {
     // create rgb array
     return ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height).data;
         
+}
+
+// calculate luminance
+export function sRGBtoLin(colorChannel) {
+    if ( colorChannel <= 0.04045 ) {
+        return colorChannel / 12.92;
+    } else {
+        return Math.pow((( colorChannel + 0.055)/1.055), 2.4);
+    }
+}
+
+export function YtoLstar(Y) {
+    if ( Y <= (216/24389)) {
+        return Y * (24389/27); 
+    } else {
+        return Math.pow(Y,(1/3)) * 116 - 16;
+    }
 }

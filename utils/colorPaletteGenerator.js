@@ -1,3 +1,5 @@
+import { sRGBtoLin, YtoLstar } from './imageProcessor.js';
+
 export function generateColorPalettes(quantizedPixelArr) {
     // create hue array
     let hsvArr = quantizedPixelArr.map(e => {
@@ -6,6 +8,11 @@ export function generateColorPalettes(quantizedPixelArr) {
 
     // generate combinedMonochromatic
     let combinedMonochromatic = generateMonochromatic([...hsvArr.map(hsv => hsv.h).reverse()], hsvArr.length).reverse();
+
+    // generate sub palletes from combined monochromatic
+    hsvArr = combinedMonochromatic.map(e => {
+        return RGBtoHSV(e.r, e.g, e.b);
+    });
 
     // generate monochromatic
     let monochromatic = [];
@@ -128,8 +135,8 @@ function generateTriadic(hsv) {
     });
     triadicColorsHSV.push({
         h: triadicHue1,
-        s: hsv.s * 0.7,
-        v: hsv.v + (100 - hsv.v) * 0.3,
+        s: hsv.s * 0.5,
+        v: hsv.v + (100 - hsv.v) * 0.5,
     });
 
     // triadic hue 2
@@ -142,8 +149,8 @@ function generateTriadic(hsv) {
     });
     triadicColorsHSV.push({
         h: triadicHue2,
-        s: hsv.s * 0.7,
-        v: hsv.v + (100 - hsv.v) * 0.3,
+        s: hsv.s * 0.5,
+        v: hsv.v + (100 - hsv.v) * 0.5,
     });
 
     return triadicColorsHSV.map(({h, s, v}) => HSVtoRGB(h, s, v));
@@ -193,13 +200,13 @@ function generateAdjacentAndComplementary(hsv) {
     if(complementHue >= 360) complementHue -= 360;
     adjacentColorsHSV.push({
         h: complementHue,
-        s: 100 - hsv.s,
-        v: 100 - hsv.v,
+        s: hsv.s,
+        v: hsv.v,
     });
     adjacentColorsHSV.push({
         h: complementHue,
-        s: 100 - hsv.s * 0.7,
-        v: 100 - hsv.v + (100 - hsv.v) * 0.3,
+        s: hsv.s * 0.7,
+        v: hsv.v + (100 - hsv.v) * 0.3,
     });
 
     return adjacentColorsHSV.map(({h, s, v}) => HSVtoRGB(h, s, v));
@@ -256,7 +263,7 @@ function map3(value, start1, stop1, start2, stop2, v, when) {
   }
 
   // modified from https://gist.github.com/mjackson/5311256
-  function HSVtoRGB(h, s, v) {
+  export function HSVtoRGB(h, s, v) {
     h /= 360;
     s /= 100;
     v /= 100;
@@ -285,7 +292,7 @@ function map3(value, start1, stop1, start2, stop2, v, when) {
     };
 }
   
-function RGBtoHSV (r, g, b) {
+export function RGBtoHSV (r, g, b) {
     let rabs, gabs, babs, rr, gg, bb, h, s, v, diff, diffc, percentRoundFn;
     rabs = r / 255;
     gabs = g / 255;
