@@ -40,7 +40,7 @@ main {
     width: 70vw;
     max-width: 40rem;
     min-height: 100vh;
-    padding: 0 5rem 2rem 5rem;
+    padding: 0 5rem;
     margin: 0 auto;
     max-width: 98vw;
 }
@@ -67,6 +67,10 @@ h3 {
 }
 
 /* palette */
+
+.palettes {
+    margin-bottom: 1rem;
+}
 
 .palette-container {
     max-width: 96vw;
