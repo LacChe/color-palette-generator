@@ -8,7 +8,7 @@
     --button-border: white;
     --text-color: #E7B10A;
     --main-background: #F7F1E5;
-    --page-sides: #4C4B16;
+    --contrasting-color: #4C4B16;
 }
 
 * {
@@ -16,10 +16,11 @@
     padding: 0;
     font-family: custom-font;
     color: var(--text-color);
+    scrollbar-width: thin;
 }
 
 body {
-    background-color: var(--page-sides);
+    background-color: var(--contrasting-color);
 }
 
 main {
@@ -31,16 +32,19 @@ main {
     width: 70vw;
     max-width: 40rem;
     min-height: 100vh;
-    padding: 0 5vh;
+    padding: 0 5rem;
     margin: 0 auto;
 }
 
 h1 {
+    width: 100%;
+    text-align: center;
     font-size: 5rem;
     padding: 2rem 0;
 }
 
 h2 {
+    margin: 0 auto;
     text-align: center;
     font-size: 2.2rem;
     padding-top: 2rem;
@@ -49,6 +53,27 @@ h2 {
 h3 {
     font-size: 1.7rem;
     padding-top: 1rem;
+}
+
+.palette-name-container {
+    display: flex;
+}
+
+.select-palette-button {
+    align-self: flex-end;
+    border-radius: 0.5rem;
+    margin: 0 0.5rem 0.2rem 0;
+    width: 3.8rem;
+    height: 100%;
+    font-size: 1.2rem;
+    color: var(--contrasting-color);
+    background-color: var(--main-background);
+    border: 0.15rem solid var(--text-color);
+    cursor: pointer;
+}
+
+.select-palette-button:active {
+    border: 0.15rem solid var(--contrasting-color);
 }
 
 /* image input */

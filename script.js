@@ -66,9 +66,18 @@ function addPalette(name, palette, parentElement, mainColors = false) {
     paletteContainer.classList.add('palette-container');
     parentElement.appendChild(paletteContainer);
 
+    const nameContainer = document.createElement('div');
+    nameContainer.classList.add('palette-name-container');
+    paletteContainer.appendChild(nameContainer);
+
+    const selectPaletteButton = document.createElement('button');
+    selectPaletteButton.classList.add('select-palette-button');
+    selectPaletteButton.textContent = 'Select';
+    nameContainer.appendChild(selectPaletteButton);
+
     const paletteName = document.createElement(`${mainColors ? 'h2' : 'h3'}`);
     paletteName.textContent = name;
-    paletteContainer.appendChild(paletteName);
+    nameContainer.appendChild(paletteName);
 
     const colorButtonsWrapper = document.createElement('div');
     colorButtonsWrapper.classList.add('main-color-buttons-wrapper');
@@ -86,6 +95,10 @@ function addPalette(name, palette, parentElement, mainColors = false) {
 
         // set onclick callbacks
         let mainCallback = function mainCallback() {
+
+            // todo
+            document.documentElement.style.setProperty('--page-sides', '#000000');
+
             mainColorButtons.forEach(b => {
                 b.classList.add('hide-inner-text');
             });
