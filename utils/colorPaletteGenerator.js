@@ -14,20 +14,142 @@ export function generateColorPalettes(quantizedPixelArr) {
     });
 
     // generate adjacent colors
-    let adjacentComplementColors = [];
+    let adjacentComplementary = [];
     hsvArr.forEach((hsv) => {
-        adjacentComplementColors.push(generateAdjacentAndComplementColors(hsv));
+        adjacentComplementary.push(generateAdjacentAndComplementary(hsv));
+    });
+
+    // generate triadic colors
+    let triadic = [];
+    hsvArr.forEach((hsv) => {
+        triadic.push(generateTriadic(hsv));
+    });
+
+    // generate triadic colors
+    let tetradic = [];
+    hsvArr.forEach((hsv) => {
+        tetradic.push(generateTetradic(hsv));
     });
 
     return {
         base: quantizedPixelArr,
         combinedMonochromatic,
         monochromatic,
-        adjacentComplementColors,
+        adjacentComplementary,
+        triadic,
+        tetradic,
     };
 }
 
-function generateAdjacentAndComplementColors(hsv) {
+function generateTetradic(hsv) {
+    let tetradicColorsHSV = [];
+
+    // main color
+    tetradicColorsHSV.push(hsv);
+    tetradicColorsHSV.push({
+        h: hsv.h,
+        s: hsv.s * 0.7,
+        v: hsv.v + (100 - hsv.v) * 0.3,
+    });
+
+    // tetradic hue 1
+    let tetradicHue1 = hsv.h - 90;
+    if(tetradicHue1 < 0) tetradicHue1 += 360;
+    tetradicColorsHSV.push({
+        h: tetradicHue1,
+        s: hsv.s,
+        v: hsv.v,
+    });
+    tetradicColorsHSV.push({
+        h: tetradicHue1,
+        s: hsv.s * 0.7,
+        v: hsv.v + (100 - hsv.v) * 0.3,
+    });
+
+    // tetradic hue 2
+    let tetradicHue2 = hsv.h + 180;
+    if(tetradicHue2 >= 360) tetradicHue2 -= 360;
+    tetradicColorsHSV.push({
+        h: tetradicHue2,
+        s: hsv.s,
+        v: hsv.v,
+    });
+    tetradicColorsHSV.push({
+        h: tetradicHue2,
+        s: hsv.s * 0.7,
+        v: hsv.v + (100 - hsv.v) * 0.3,
+    });
+
+    // tetradic hue 3
+    let tetradicHue3 = hsv.h + 90;
+    if(tetradicHue3 >= 360) tetradicHue3 -= 360;
+    tetradicColorsHSV.push({
+        h: tetradicHue3,
+        s: hsv.s,
+        v: hsv.v,
+    });
+    tetradicColorsHSV.push({
+        h: tetradicHue3,
+        s: hsv.s * 0.7,
+        v: hsv.v + (100 - hsv.v) * 0.3,
+    });
+
+    return tetradicColorsHSV.map(({h, s, v}) => HSVtoRGB(h, s, v));
+}
+
+function generateTriadic(hsv) {
+    let triadicColorsHSV = [];
+
+    // main color
+    triadicColorsHSV.push(hsv);
+    triadicColorsHSV.push({
+        h: hsv.h,
+        s: hsv.s * 0.8,
+        v: hsv.v + (100 - hsv.v) * 0.2,
+    });
+    triadicColorsHSV.push({
+        h: hsv.h,
+        s: hsv.s * 0.6,
+        v: hsv.v + (100 - hsv.v) * 0.4,
+    });
+    triadicColorsHSV.push({
+        h: hsv.h,
+        s: hsv.s * 0.4,
+        v: hsv.v + (100 - hsv.v) * 0.6,
+    });
+
+    // triadic hue 1
+    let triadicHue1 = hsv.h - 120;
+    if(triadicHue1 < 0) triadicHue1 += 360;
+    triadicColorsHSV.push({
+        h: triadicHue1,
+        s: hsv.s,
+        v: hsv.v,
+    });
+    triadicColorsHSV.push({
+        h: triadicHue1,
+        s: hsv.s * 0.7,
+        v: hsv.v + (100 - hsv.v) * 0.3,
+    });
+
+    // triadic hue 2
+    let triadicHue2 = hsv.h + 120;
+    if(triadicHue2 >= 360) triadicHue2 -= 360;
+    triadicColorsHSV.push({
+        h: triadicHue2,
+        s: hsv.s,
+        v: hsv.v,
+    });
+    triadicColorsHSV.push({
+        h: triadicHue2,
+        s: hsv.s * 0.7,
+        v: hsv.v + (100 - hsv.v) * 0.3,
+    });
+
+    return triadicColorsHSV.map(({h, s, v}) => HSVtoRGB(h, s, v));
+}
+
+function generateAdjacentAndComplementary(hsv) {
     let adjacentColorsHSV = [];
 
     // main color
@@ -81,7 +203,6 @@ function generateAdjacentAndComplementColors(hsv) {
     });
 
     return adjacentColorsHSV.map(({h, s, v}) => HSVtoRGB(h, s, v));
-
 }
 
 // modified from https://sighack.com/post/procedural-color-algorithms-monochromatic-color-scheme
