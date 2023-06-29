@@ -67,6 +67,10 @@ h3 {
 
 /* palette */
 
+.palette-container {
+    max-width: 98vw;
+}
+
 .palette-name-container {
     display: flex;
 }
